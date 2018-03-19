@@ -3,6 +3,7 @@ import enum
 import os
 import yaml
 
+from requests import Response
 from py_nifcloud.nifcloud_client import NifCloudClient
 
 
@@ -208,3 +209,12 @@ class ComputingClient(NifCloudClient):
 
         return self.post(query=params)
 
+    def create_volume(self, instance_name: str, size: int, volume_name: str=None, disk_type: int=None,
+                      accounting_type: int=None, volume_description: str=None) -> Response:
+        params = {"Action": "CreateVolume", "InstanceId": instance_name, "Size": size}
+        self.__update_params(params=params, key="VolumeId", value=volume_name)
+        self.__update_params(params=params, key="DiskType", value=disk_type)
+        self.__update_params(params=params, key="AccountingType", value=accounting_type)
+        self.__update_params(params=params, key="Description", value=volume_description)
+
+        return self.post(query=params)
